@@ -1,2 +1,2 @@
 # internal-example
-internal example cheat
+An example source for making a Read Write Memory
