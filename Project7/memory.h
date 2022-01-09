@@ -20,24 +20,27 @@ bool readsize(uint64_t address, void* buffer, SIZE_T size)
 	return true;
 }
 
-template<typename type>
-type read(uintptr_t address)
+BOOL valid_pointer(DWORD64 address)
 {
-	if (reinterpret_cast<type*>(address) != nullptr)
-		return *reinterpret_cast<type*>(address);
-	else
-		return type{};
+	if (!IsBadWritePtr((LPVOID)address, (UINT_PTR)8)) return TRUE;
+	else return FALSE;
 }
 
-template<typename type>
-bool write(uintptr_t address, const type& value)
+template<typename ReadT>
+ReadT read(DWORD_PTR address, const ReadT& def = ReadT())
 {
-	if (reinterpret_cast<type*>(address) != nullptr)
-	{
-		*reinterpret_cast<type*>(address) = value;
+	if (valid_pointer(address)) {
+		return *(ReadT*)(address);
+	}
+}
+
+template<typename WriteT>
+bool write(DWORD_PTR address, WriteT value, const WriteT& def = WriteT())
+{
+	if (valid_pointer(address)) {
+		*(WriteT*)(address) = value;
 		return true;
 	}
-
 	return false;
 }
 
